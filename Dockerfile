@@ -25,5 +25,6 @@ COPY . .
 # Exposer le port par defaut
 EXPOSE 8000
 
-# Demarrage via shell form pour que $PORT soit interprete
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+# Reset ENTRYPOINT de l'image de base et demarrer via sh
+ENTRYPOINT []
+CMD ["/bin/sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
