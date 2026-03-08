@@ -1,0 +1,10 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/health"
+
+[nixpacks]
+phases.setup.nixPkgs = ["chromium", "glib", "nss", "nspr", "dbus", "expat"]
+phases.install.cmds = ["pip install -r requirements.txt", "playwright install chromium"]
