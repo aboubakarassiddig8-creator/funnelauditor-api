@@ -1,6 +1,6 @@
-# ============================================================
+# ===========================================================
 # Image officielle Playwright Python - Chrome + deps inclus
-# ============================================================
+# ===========================================================
 FROM mcr.microsoft.com/playwright/python:v1.40.0-jammy
 
 # Repertoire de travail
@@ -25,5 +25,5 @@ COPY . .
 # Exposer le port par defaut
 EXPOSE 8000
 
-# Demarrage via shell pour que $PORT soit interprete
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Demarrage via shell form pour que $PORT soit interprete
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
