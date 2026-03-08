@@ -1,28 +1,29 @@
 # ============================================================
-# Image officielle Playwright Python — Chrome + deps inclus
+# Image officielle Playwright Python - Chrome + deps inclus
 # ============================================================
 FROM mcr.microsoft.com/playwright/python:v1.40.0-jammy
 
 # Repertoire de travail
 WORKDIR /app
 
-# Variables d'environnement Playwright
+# Variables d'environnement
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV PORT=8000
 
-# Copier les dependances et les installer
+# Copier et installer les dependances Python
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# S'assurer que Chromium est bien installe (securite)
+# Verifier que Chromium est disponible
 RUN playwright install chromium
 
-# Copier tout le code source
+# Copier le code source
 COPY . .
 
-# Exposer le port (Railway injecte $PORT au runtime)
+# Exposer le port par defaut
 EXPOSE 8000
 
-# Commande de demarrage
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+# Demarrage via shell pour que $PORT soit interprete
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
