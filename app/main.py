@@ -10,9 +10,17 @@ from app.services.audit import generate_audit
 
 app = FastAPI(title="FunnelAuditor API")
 
+# Origines explicitement autorisees (Lovable preview + production)
+ALLOWED_ORIGINS = [
+    "https://lovable.app",
+    "https://www.lovable.app",
+    "https://funnelauditor.lovable.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_origin_regex=r"https://(id-preview--[a-zA-Z0-9-]+\.lovable\.app|[a-zA-Z0-9-]+\.lovable\.app)",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -41,7 +49,6 @@ async def create_audit(request: AuditRequest):
         scraped = await scrape_funnel(request.url)
         scores = score_funnel(scraped)
         audit_report = generate_audit(scraped, scores)
-
         data = {
             "id": audit_id,
             "user_id": request.user_id,
@@ -51,9 +58,7 @@ async def create_audit(request: AuditRequest):
             "screenshot_url": scraped.get("screenshot_url", ""),
             "status": "completed",
         }
-
         supabase.table("audits").insert(data).execute()
-
         return {"audit_id": audit_id, "score": scores["global"], "report": audit_report}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
