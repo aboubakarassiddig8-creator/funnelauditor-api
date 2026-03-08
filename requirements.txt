@@ -2,7 +2,7 @@ fastapi==0.104.1
 uvicorn[standard]==0.24.0
 playwright==1.40.0
 supabase==2.3.0
-httpx==0.25.2
+httpx>=0.24.0,<0.25.0
 python-multipart==0.0.6
 pillow==10.1.0
 beautifulsoup4==4.12.2
